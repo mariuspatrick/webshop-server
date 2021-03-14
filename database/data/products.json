@@ -1,0 +1,32 @@
+[
+{
+  "name": "Pioneer DJ Mixer",
+  "price": 699,
+  "description": "David Guetta's mixer (it's not just an SD-card, stop asking)",
+  "quantity": 1
+},
+{
+  "name": "Roland Wave Sampler",
+  "price": 485,
+  "description": "Cool sampler",
+  "quantity": 4
+},
+{
+  "name": "Reloop Headphone",
+  "price": 159,
+  "description": "Noise cancelling headphones",
+  "quantity": 16
+},
+{
+  "name": "Rokit Monitor",
+  "price": 189.9,
+  "description": "This is a monitor",
+  "quantity": 19
+},
+{
+  "name": "Fisherprice Baby Mixer",
+  "price": 120,
+  "description": "it's a baby mixer yay",
+  "quantity": 44
+}
+]

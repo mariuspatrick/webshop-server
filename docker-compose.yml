@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: mdude
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: webshop
+    container_name: webshop-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+    - webshop
+
+  db:
+     image: mysql:8.0
+     container_name: webshop-db
+     restart: unless-stopped
+     environment:
+       MYSQL_DATABASE: ${DB_DATABASE}
+       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+       MYSQL_PASSWORD: ${DB_PASSWORD}
+       SERVICE_TAGS: dev
+       SERVICE_NAME: mysql
+     networks:
+       - webshop
+
+  nginx:
+    image: nginx:alpine
+    container_name: webshop-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - webshop
+
+networks:
+  webshop:
+    driver: bridge
