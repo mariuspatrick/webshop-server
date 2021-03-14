@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
 use App\Models\Product;
 use App\Models\ProductsToCart;
 use App\Models\ShoppingCart;
+use App\Http\Resources\ProductsToCartResource;
 
 class ProductsToCartController extends Controller
 {
+    public function index($id)
+    {
+        return ProductsToCartResource::collection(ProductsToCart::where('shopping_cart_id', $id)->get());
+    }
+
     public function getSubtotal()
     {
         $subtotal = 0;
@@ -29,9 +34,22 @@ class ProductsToCartController extends Controller
             $product = Product::find($products->product_id);
             $subtotal += $product->price;
         }
-        
+
         return response()->json([
             'subtotal' => $subtotal
+        ], 200);
+    }
+
+    public function removeFromCart($id)
+    {
+        $product = ProductsToCart::where('unique_id', $id)->first();
+
+        Product::where('id', $product->id)->first()->update([
+            'times_removed_from_cart' => +1,
+        ]);
+        $product->delete();
+        return response()->json([
+            'deleted' => new ProductsToCartResource($product),
         ], 200);
     }
 
@@ -39,6 +57,5 @@ class ProductsToCartController extends Controller
     {
         $subtotal = $this->getSubtotal()->getData()->subtotal;
         dd($subtotal);
-        
     }
 }

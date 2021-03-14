@@ -11,13 +11,13 @@ use App\Models\Product;
 use App\Models\ProductsToCart;
 use App\Models\ShoppingCart;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductsToCartResource;
 
 class ProductController extends Controller
 {
     //
     public function index()
     {
-        dd(auth()->user());
         return ProductResource::collection(Product::all());
     }
 
@@ -68,11 +68,7 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'shopping_cart' => ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get(),
+            'shopping_cart' => ProductsToCartResource::collection(ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get()),
         ], 200);
-    }
-
-    public function removeFromCart()
-    {
     }
 }

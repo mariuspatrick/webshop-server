@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->text('description');
             $table->float('price')->nullable();
             $table->integer('quantity')->default(0);
-            $table->integer('times_removed_from_cart')->nullable();
+            $table->integer('times_removed_from_cart')->default(0);
             $table->timestamps();
         });
     }

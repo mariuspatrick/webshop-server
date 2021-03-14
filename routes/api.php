@@ -40,12 +40,18 @@ Route::name('user.logout')
 
 // ProductsToCart routes
 
+Route::resource('shopping-cart/{shoppingCart}', 'App\Http\Controllers\ProductsToCartController')->only(['index'])->middleware(['cors', 'auth:api']);
+
 Route::name('productsToCart.subtotal')
     ->get('subtotal', 'App\Http\Controllers\ProductsToCartController@getSubtotal')
     ->middleware(['cors', 'auth:api']);
 
 Route::name('productsToCart.buy')
     ->get('buy', 'App\Http\Controllers\ProductsToCartController@buy')
+    ->middleware(['cors', 'auth:api']);
+
+Route::name('product.remove-from-cart')
+    ->delete('shopping-cart/{productId}', 'App\Http\Controllers\ProductsToCartController@removeFromCart')
     ->middleware(['cors', 'auth:api']);
 
     
