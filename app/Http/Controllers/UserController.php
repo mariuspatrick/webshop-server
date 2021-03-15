@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\ShoppingCart;
+use App\Http\Resources\ShoppingCartResource;
 use Illuminate\Support\Facades\Hash;
 
 // use Laravel\Passport\Client;
@@ -51,6 +52,11 @@ class UserController extends Controller
         } else {
             return response()->json(['error' => "User with this email doesn't exist"], 422);
         }
+    }
+
+    public function getCart()
+    {
+        return new ShoppingCartResource(auth()->user()->cart);
     }
 
     public function logout(Request $request)

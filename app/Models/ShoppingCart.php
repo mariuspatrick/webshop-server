@@ -11,6 +11,7 @@ class ShoppingCart extends Model
 
     protected $fillable = [
         'user_id',
+        'sub_total'
     ];
 
     public function user()

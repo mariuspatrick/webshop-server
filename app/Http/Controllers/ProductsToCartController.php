@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductsToCart;
 use App\Models\ShoppingCart;
 use App\Http\Resources\ProductsToCartResource;
+use App\Http\Resources\ProductResource;
 
 class ProductsToCartController extends Controller
 {
@@ -16,7 +17,7 @@ class ProductsToCartController extends Controller
         return ProductsToCartResource::collection(ProductsToCart::where('shopping_cart_id', $id)->get());
     }
 
-    public function getSubtotal()
+    public function buy()
     {
         $subtotal = 0;
         $user = auth()->user();
@@ -33,10 +34,20 @@ class ProductsToCartController extends Controller
         foreach ($productsInCart as $products) {
             $product = Product::find($products->product_id);
             $subtotal += $product->price;
+            if ($product->quantity > 0) {
+                $product->decrement('quantity', 1);
+                ProductsToCart::where('product_id', $product->id)->first()->delete();
+            } else {
+                return response()->json([
+                    "message" => $product->title . ' out of stock',
+                ]);
+            }
+            $productArray[] = $product;
         }
 
         return response()->json([
-            'subtotal' => $subtotal
+            'subtotal' => $subtotal,
+            'products' => ProductResource::collection($productArray),
         ], 200);
     }
 
@@ -44,18 +55,25 @@ class ProductsToCartController extends Controller
     {
         $product = ProductsToCart::where('unique_id', $id)->first();
 
-        Product::where('id', $product->id)->first()->update([
-            'times_removed_from_cart' => +1,
-        ]);
+        Product::where('id', $product->id)->first()
+            ->increment('times_removed_from_cart', 1);
         $product->delete();
         return response()->json([
-            'deleted' => new ProductsToCartResource($product),
+            'removed_from_cart' => new ProductsToCartResource($product),
         ], 200);
     }
 
-    public function buy()
+    public function getProducts()
     {
-        $subtotal = $this->getSubtotal()->getData()->subtotal;
-        dd($subtotal);
+        $shoppingCart = auth()->user()->cart;
+        $productsInCart = ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get();
+
+        foreach ($productsInCart as $products) {
+            $product[] = Product::find($products->product_id);
+        }
+
+        return response()->json([
+            'products' => ProductResource::collection($product),
+        ], 200);
     }
 }

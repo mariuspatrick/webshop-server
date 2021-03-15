@@ -48,11 +48,13 @@ class ProductController extends Controller
     {
         $shoppingCart = auth()->user()->cart;
         $product = Product::find($id);
+        $subtotal = 0;
 
         $this->validate($request, [
             'quantity' => 'required|numeric|min:0|not_in:0'
         ]);
 
+        // Generate unique id's for each product added to cart
         if ($product->quantity > 0) {
             for ($x = 0; $x < $request->quantity; $x++) {
                 ProductsToCart::create([
@@ -66,6 +68,18 @@ class ProductController extends Controller
                 'message' => 'Product out of stock!'
             ], 200);
         }
+
+        // Update cart subtotal
+        $productsInCart = ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get();
+
+        foreach ($productsInCart as $products) {
+            $product = Product::find($products->product_id);
+            $subtotal += $product->price;
+        }
+
+        $shoppingCart->first()->update([
+            'sub_total' => +$subtotal,
+        ]);
 
         return response()->json([
             'shopping_cart' => ProductsToCartResource::collection(ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get()),

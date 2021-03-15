@@ -38,26 +38,26 @@ Route::name('user.logout')
     ->post('logout', 'App\Http\Controllers\UserController@logout')
     ->middleware(['cors', 'auth:api']);
 
+Route::name('user.getCart')
+    ->get('user/shopping-cart', 'App\Http\Controllers\UserController@getCart')
+    ->middleware(['cors', 'auth:api']);
+
 // ProductsToCart routes
 
-Route::resource('shopping-cart/{shoppingCart}', 'App\Http\Controllers\ProductsToCartController')->only(['index'])->middleware(['cors', 'auth:api']);
-
-Route::name('productsToCart.subtotal')
-    ->get('subtotal', 'App\Http\Controllers\ProductsToCartController@getSubtotal')
-    ->middleware(['cors', 'auth:api']);
+Route::resource('products-to-cart/{shoppingCart}', 'App\Http\Controllers\ProductsToCartController')->only(['index'])->middleware(['cors', 'auth:api']);
 
 Route::name('productsToCart.buy')
     ->get('buy', 'App\Http\Controllers\ProductsToCartController@buy')
     ->middleware(['cors', 'auth:api']);
 
 Route::name('product.remove-from-cart')
-    ->delete('shopping-cart/{productId}', 'App\Http\Controllers\ProductsToCartController@removeFromCart')
+    ->delete('products-to-cart/{productId}', 'App\Http\Controllers\ProductsToCartController@removeFromCart')
     ->middleware(['cors', 'auth:api']);
 
-    
-// Route::name('user.logout')
-//     ->get('logout', 'App\Http\Controllers\UserController@logout')->middleware(['web']);
+Route::name('products.get')
+    ->get('get-products', 'App\Http\Controllers\ProductsToCartController@getProducts')
+    ->middleware(['cors', 'auth:api']);
 
-// Route::get('/email/verify', function () {
-//     return view('auth.verify-email');
-// })->middleware('auth')->name('verification.notice');
+// Shopping cart routes
+
+// Route::resource('shopping-cart', 'App\Http\Controllers\ShoppingCartController')->only(['show'])->middleware(['cors', 'auth:api']);
