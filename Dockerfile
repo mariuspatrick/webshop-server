@@ -33,9 +33,9 @@ WORKDIR /var/www
 
 USER $user
 
-RUN docker-compose exec app php artisan migrate
-RUN docker-compose exec app php artisan key:generate 
-RUN docker-compose exec app php artisan passport:install
-RUN docker-compose exec app php artisan passport:client --personal
-RUN docker-compose exec app php artisan db:seed
-RUN docker-compose exec app php artisan db:seed --class=ProductsFakerSeeder  
+# RUN php artisan migrate
+# RUN php artisan key:generate 
+# RUN php artisan passport:install
+# RUN php artisan passport:client --personal
+# RUN php artisan db:seed
+# RUN php artisan db:seed --class=ProductsFakerSeeder  
