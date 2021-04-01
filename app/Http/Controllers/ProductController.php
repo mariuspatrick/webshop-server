@@ -4,22 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Support\Str;
 
 use App\Models\Product;
-use App\Models\ProductsToCart;
-use App\Models\ShoppingCart;
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\ProductsToCartResource;
 
-use App\Repositories\ShoppingCartRepositoryInterface;
+use App\Services\ShoppingCartService;
 
 class ProductController extends Controller
 {
     protected $shoppingCart;
 
-    public function __construct(ShoppingCartRepositoryInterface $shoppingCart)
+    public function __construct(ShoppingCartService $shoppingCart)
     {
         $this->shoppingCart = $shoppingCart;
     }
@@ -54,6 +49,10 @@ class ProductController extends Controller
 
     public function addToCart($id, Request $request)
     {
-        $this->shoppingCart->add($id, $request);
+        $response = $this->shoppingCart->addToCart($id, $request);
+
+        return response()->json([
+            "shopping_cart" => $response,
+        ], 201);
     }
 }

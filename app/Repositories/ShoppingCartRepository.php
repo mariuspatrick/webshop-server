@@ -13,14 +13,9 @@ class ShoppingCartRepository implements ShoppingCartRepositoryInterface
 {
   public function add($productId, $request)
   {
-    // dd($request['quantity']);
     $shoppingCart = auth()->user()->cart;
     $product = Product::find($productId);
     $subtotal = 0;
-
-    $request->validate([
-      'quantity' => 'required|numeric|min:0|not_in:0'
-    ]);
 
     if ($product->quantity > 0) {
       for ($x = 0; $x < $request->quantity; $x++) {
@@ -48,8 +43,6 @@ class ShoppingCartRepository implements ShoppingCartRepositoryInterface
       'sub_total' => +$subtotal,
     ]);
 
-    return response()->json([
-      'shopping_cart' => ProductsToCartResource::collection(ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get()),
-    ], 200);
+    return ProductsToCartResource::collection(ProductsToCart::where('shopping_cart_id', $shoppingCart->id)->get());
   }
 }
